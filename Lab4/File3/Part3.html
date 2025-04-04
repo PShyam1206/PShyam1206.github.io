@@ -1,62 +1,136 @@
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Bouncing balls</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
 
-  <body>
-    <h1>bouncing balls</h1>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Bouncing Balls</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Header section -->
+  <header>
+    <h1>Bouncing Balls</h1>
+  </header>
+
+  <!-- Main content area -->
+  <main>
+    <!-- Canvas where the animation will take place -->
     <canvas></canvas>
+  </main>
 
-    <script src="main.js"></script>
-  </body>
+  <!-- Optional Footer -->
+  <footer>
+    <p>Created by Your Name | 2025</p>
+  </footer>
+
+  <!-- CSS Styles -->
+  <style>
+    html, body {
+      margin: 0;
+    }
+
+    html {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      height: 100%;
+    }
+
+    body {
+      overflow: hidden;
+      height: inherit;
+    }
+
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -1px;
+      position: absolute;
+      margin: 0;
+      top: -4px;
+      right: 5px;
+      color: transparent;
+      text-shadow: 0 0 4px white;
+    }
+  </style>
+
+  <!-- JavaScript -->
+  <script>
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Dynamically set the canvas width and height to the full window size
+    const width = (canvas.width = window.innerWidth);
+    const height = (canvas.height = window.innerHeight);
+
+    // Function to generate a random number within a range
+    function random(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Function to generate a random RGB color
+    function randomRGB() {
+      return `rgb(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)})`;
+    }
+
+    // Ball class to represent each ball in the animation
+    class Ball {
+      constructor() {
+        this.radius = random(10, 30); // Ball size
+        this.x = random(this.radius, width - this.radius); // Initial x position
+        this.y = random(this.radius, height - this.radius); // Initial y position
+        this.speedX = random(-4, 4); // Horizontal speed
+        this.speedY = random(-4, 4); // Vertical speed
+        this.color = randomRGB(); // Random color for each ball
+      }
+
+      // Method to draw the ball on the canvas
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Draw circle
+        ctx.fillStyle = this.color; // Set the fill color
+        ctx.fill();
+      }
+
+      // Method to update the ball's position and check for collisions with the walls
+      update() {
+        // Check for collision with the walls
+        if (this.x + this.radius > width || this.x - this.radius < 0) {
+          this.speedX = -this.speedX; // Reverse direction on x-axis
+        }
+        if (this.y + this.radius > height || this.y - this.radius < 0) {
+          this.speedY = -this.speedY; // Reverse direction on y-axis
+        }
+
+        // Update the ball's position
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        this.draw(); // Redraw the ball in its new position
+      }
+    }
+
+    // Create an array to store the balls
+    const balls = [];
+    for (let i = 0; i < 10; i++) {
+      balls.push(new Ball()); // Create 10 balls
+    }
+
+    // Function to animate the balls
+    function animate() {
+      ctx.clearRect(0, 0, width, height); // Clear the canvas for each frame
+
+      // Update and draw each ball
+      for (let i = 0; i < balls.length; i++) {
+        balls[i].update();
+      }
+
+      // Loop the animation
+      requestAnimationFrame(animate);
+    }
+
+    // Start the animation
+    animate();
+  </script>
+</body>
+
 </html>
-<Style>
-html, body {
-    margin: 0;
-  }
-  
-  html {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    height: 100%;
-  }
-  
-  body {
-    overflow: hidden;
-    height: inherit;
-  }
-  
-  h1 {
-    font-size: 2rem;
-    letter-spacing: -1px;
-    position: absolute;
-    margin: 0;
-    top: -4px;
-    right: 5px;
-  
-    color: transparent;
-    text-shadow: 0 0 4px white;
-  }
-</style>
-// setup canvas
-
-const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext("2d");
-
-const width = (canvas.width = window.innerWidth);
-const height = (canvas.height = window.innerHeight);
-
-// function to generate random number
-
-function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// function to generate random color
-
-function randomRGB() {
-  return `rgb(${random(0, 255)},${random(0, 255)},${random(0, 255)})`;
-}
